@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from colorfield.fields import ColorField
 from django.core.validators import MaxValueValidator, MinValueValidator
+from colorfield.fields import ColorField
 
 
 User = get_user_model()
@@ -71,7 +71,7 @@ class Recipe(models.Model):
         help_text='Название рецепта',
     )
     image = models.ImageField(
-        verbose_name='Картинка',
+        verbose_name='Фото',
         help_text='Фото блюда',
     )
     text = models.TextField(

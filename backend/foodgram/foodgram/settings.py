@@ -4,23 +4,16 @@ from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-# Quick-start development settings - unsuitable for production
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', default=False) == 'True'
 
 ALLOWED_HOSTS = ['*']
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,6 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
+    'api.apps.ApiConfig',
+    'rest_framework',
+    'colorfield',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +71,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': os.getenv('DB_NAME', default='foodgram'),
+#         'NAME': os.getenv('DB_NAME', default='postgres'),
 #         'USER': os.getenv('POSTGRES_USER', default='postgres'),
 #         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
 #         'HOST': os.getenv('DB_HOST', default='localhost'),
@@ -124,12 +120,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'users.User'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':
-    ['rest_framework.authentication.TokenAuthentication', ],
-
-    'DEFAULT_PERMISSION_CLASSES':
-    ['rest_framework.permissions.IsAuthenticatedOrReadOnly', ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
+    'UPLOADED_FILES_USE_URL': False,
 }

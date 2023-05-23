@@ -22,8 +22,8 @@ class IngredientAdmin(admin.ModelAdmin):
         'name',
         'measurement_unit',
     )
-    search_fields = ('name')
-    list_filter = ('measurement_unit')
+    search_fields = ('name',)
+    list_filter = ('measurement_unit',)
 
 
 admin.site.register(Recipe, RecipeAdmin)
