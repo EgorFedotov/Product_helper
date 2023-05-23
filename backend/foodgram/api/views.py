@@ -7,8 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from posts.models import (FavoriteRecipe, Ingredient, IngredientAmount, Recipe,
-                          ShoppingCart, Subscription, Tag)
+from recipes.models import (FavoriteRecipe, Ingredient,
+                            IngredientAmount, Recipe,
+                            ShoppingCart, Subscription, Tag)
 from users.models import User
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
