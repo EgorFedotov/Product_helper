@@ -2,4 +2,7 @@ Django==4.2.1
 python-dotenv==1.0.0
 postgres==4.0
 djangorestframework==3.14.0
-django-colorfield-0.8.0
+django-colorfield==0.8.0
+webcolors==1.13
+django-filter==23.2
+djoser==2.2.0
