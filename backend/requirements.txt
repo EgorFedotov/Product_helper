@@ -6,3 +6,4 @@ django-colorfield==0.8.0
 webcolors==1.13
 django-filter==23.2
 djoser==2.2.0
+psycopg2==2.9.6
