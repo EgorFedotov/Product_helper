@@ -42,10 +42,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000',]
-
-CORS_URLS_REGEX = r'^/api/.*$'
-
 ROOT_URLCONF = 'foodgram.urls'
 
 TEMPLATES = [
@@ -113,7 +109,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'users.User'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -142,9 +138,8 @@ DJOSER = {
         'current_user': 'api.serializers.CustomUserSerializer',
         'user': 'api.serializers.CustomUserSerializer',
     },
-    'PERMISSIONS': {
-        'user': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
-        'user_list': ('rest_framework.permissions.AllowAny',),
-        'token_create': ['rest_framework.permissions.AllowAny'],
+    "PERMISSIONS": {
+        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
+        "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
     },
 }
