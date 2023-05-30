@@ -3,12 +3,11 @@ import re
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientAmount,
+                            Recipe, ShoppingCart, Subscription, Tag)
 from rest_framework import serializers, status
-
-from recipes.models import (FavoriteRecipe, Ingredient,
-                            IngredientAmount, Recipe,
-                            ShoppingCart, Subscription, Tag)
 from users.models import User
+
 from .fields import Base64ImageField, Hex2NameColor
 
 
