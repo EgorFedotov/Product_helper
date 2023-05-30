@@ -2,6 +2,7 @@ from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from foodgram.settings import LENGTH_FIELDS_RECIPES
 
 User = get_user_model()
 
@@ -10,7 +11,7 @@ class Tag(models.Model):
     """Модель тега."""
     name = models.CharField(
         unique=True,
-        max_length=200,
+        max_length=LENGTH_FIELDS_RECIPES,
         verbose_name='Название',
         help_text='Название тега',
     )
@@ -22,7 +23,7 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         unique=True,
-        max_length=200,
+        max_length=LENGTH_FIELDS_RECIPES,
         verbose_name='Slug',
         help_text='Slug тега',
     )
@@ -39,13 +40,13 @@ class Ingredient(models.Model):
     """Модель ингридиентов."""
     name = models.CharField(
         db_index=True,
-        max_length=200,
+        max_length=LENGTH_FIELDS_RECIPES,
         verbose_name='Название ингредиента',
         help_text='Название ингредиента',
     )
     measurement_unit = models.CharField(
         default='г',
-        max_length=200,
+        max_length=LENGTH_FIELDS_RECIPES,
         verbose_name='Единицы измерения',
         help_text='Единицы измерения',
     )
@@ -72,7 +73,7 @@ class Recipe(models.Model):
         help_text='Автор рецепта',
     )
     name = models.CharField(
-        max_length=100,
+        max_length=LENGTH_FIELDS_RECIPES,
         verbose_name='Название',
         help_text='Название рецепта',
     )
