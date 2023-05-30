@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from foodgram.settings import LENGTH_FIELDS_USER
 
 
 class User(AbstractUser):
@@ -7,29 +8,29 @@ class User(AbstractUser):
     email = models.EmailField(
         unique=True,
         db_index=True,
-        max_length=254,
+        max_length=LENGTH_FIELDS_USER,
         verbose_name='Email',
         help_text='Email'
     )
     username = models.CharField(
         unique=True,
         db_index=True,
-        max_length=150,
+        max_length=LENGTH_FIELDS_USER,
         verbose_name='Логин',
         help_text='Логин пользователя',
     )
     first_name = models.CharField(
-        max_length=150,
+        max_length=LENGTH_FIELDS_USER,
         verbose_name='Имя',
         help_text='Имя'
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=LENGTH_FIELDS_USER,
         verbose_name='Фамилия',
         help_text='Фамилия'
     )
     password = models.CharField(
-        max_length=150,
+        max_length=LENGTH_FIELDS_USER,
         verbose_name='Пароль',
         help_text='Пароль пользователя'
     )

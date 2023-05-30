@@ -143,3 +143,7 @@ DJOSER = {
         "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
     },
 }
+
+
+LENGTH_FIELDS_RECIPES = 200
+LENGTH_FIELDS_USER = 150
