@@ -4,6 +4,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from foodgram.settings import LENGTH_FIELDS_RECIPES
 
+from recipes.validators import ColorValidator
+
 User = get_user_model()
 
 
@@ -15,11 +17,11 @@ class Tag(models.Model):
         verbose_name='Название',
         help_text='Название тега',
     )
-    color = ColorField(
-        format='hex',
-        default='#FF0000',
+    color = models.CharField(
         verbose_name='HEX-код цвета',
         help_text='Цветовой HEX-код',
+        unique=True,
+        validators=[ColorValidator]
     )
     slug = models.SlugField(
         unique=True,

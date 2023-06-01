@@ -3,41 +3,40 @@ import re
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientAmount,
                             Recipe, ShoppingCart, Subscription, Tag)
 from rest_framework import serializers, status
 from users.models import User
 
-from .fields import Base64ImageField, Hex2NameColor
+
+# class CreateUserSerializer(UserCreateSerializer):
+#     """Сериализатор для cоздания пользователя."""
+#     class Meta:
+#         model = User
+#         fields = (
+#             'email',
+#             'password',
+#             'username',
+#             'first_name',
+#             'last_name',
+#         )
+#         extra_kwargs = {'password': {'write_only': True}}
+
+#     def validate(self, data):
+#         if data['username'].lower() == 'me':
+#             raise ValidationError(
+#                 {'Имя пользователя не может быть <me>.'})
+#         if re.search(
+#             r'^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$', data['username']
+#         ) is None:
+#             raise ValidationError(
+#                 ('Недопустимые символы в username'),
+#             )
+#         return data
 
 
-class CreateUserSerializer(UserCreateSerializer):
-    """Сериализатор для cоздания пользователя."""
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'password',
-            'username',
-            'first_name',
-            'last_name',
-        )
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def validate(self, data):
-        if data['username'].lower() == 'me':
-            raise ValidationError(
-                {'Имя пользователя не может быть <me>.'})
-        if re.search(
-            r'^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$', data['username']
-        ) is None:
-            raise ValidationError(
-                ('Недопустимые символы в username'),
-            )
-        return data
-
-
-class CustomUserSerializer(UserSerializer):
+class CreateUserSerializer(UserSerializer):
     """Сериализатор для пользователя."""
     is_subscribed = serializers.SerializerMethodField()
 
@@ -53,10 +52,10 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        return Subscription.objects.filter(
-            user=user, author=obj
-        ).exists() if user.is_authenticated else False
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return obj.subscribing.filter(user=request.user).exists()
 
 
 class SubscribeRecipeSerializer(serializers.ModelSerializer):
@@ -100,8 +99,11 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         recipes_limit = request.GET.get('recipes_limit')
         recipes = Recipe.objects.filter(author=obj.author)
         if recipes_limit:
-            recipes = recipes[:int(recipes_limit)]
-        serializer = SubscribeRecipeSerializer(recipes, 
+            try:
+                recipes = recipes[:int(recipes_limit)]
+            except ValueError:
+                raise ValueError('Неверно задан параметр количества рецептов')
+        serializer = SubscribeRecipeSerializer(recipes,
                                                many=True,
                                                read_only=True)
         return serializer.data
@@ -135,11 +137,11 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Tag."""
-    color = Hex2NameColor()
 
     class Meta:
         model = Tag
         fields = '__all__'
+        read_only_fields = ('name', 'color', 'slug',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -168,8 +170,8 @@ class IngredientRecipeGetSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для рецептов."""
-    author = CustomUserSerializer()
-    image = Base64ImageField()
+    author = CreateUserSerializer()
+    image = Base64ImageField(max_length=None, use_url=True)
     ingredients = IngredientRecipeGetSerializer(many=True,
                                                 read_only=True,
                                                 source='amount_ingredient')
@@ -253,7 +255,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             recipe.tags.add(tag)
             recipe.save()
         for ingredient in ingredients:
-            IngredientAmount.objects.create(
+            IngredientAmount.objects.bulk_create(
                 ingredient_id=ingredient.get('id'),
                 amount=ingredient.get('amount'),
                 recipe=recipe
@@ -263,7 +265,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
+        recipe = Recipe.objects.bulk_create(**validated_data)
         return self.add_ingredients_and_tags(
             tags, ingredients, recipe
         )

@@ -14,7 +14,7 @@ from users.models import User
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (CreateRecipeSerializer, CustomUserSerializer,
+from .serializers import (CreateRecipeSerializer, CreateUserSerializer,
                           IngredientSerializer, RecipeSerializer,
                           SubscribeRecipeSerializer, SubscriptionSerializer,
                           TagSerializer)
@@ -23,7 +23,7 @@ from .serializers import (CreateRecipeSerializer, CustomUserSerializer,
 class UsersViewSet(UserViewSet):
     """Работа с пользователями."""
     queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = CreateUserSerializer
     search_fields = ('username', 'email')
 
     @action(
@@ -170,13 +170,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ingredients = IngredientAmount.objects.filter(
                     recipe=purchase.recipe.id
                 )
-                for r in ingredients:
-                    i = Ingredient.objects.get(pk=r.ingredient.id)
-                    point_name = f'{i.name} ({i.measurement_unit})'
+                for ingr in ingredients:
+                    ingrid = Ingredient.objects.get(pk=ingr.ingredient.id)
+                    point_name = f'{ingrid.name} ({ingrid.measurement_unit})'
                     if point_name in shop_cart.keys():
-                        shop_cart[point_name] += r.amount
+                        shop_cart[point_name] += ingr.amount
                     else:
-                        shop_cart[point_name] = r.amount
+                        shop_cart[point_name] = ingr.amount
 
             for name, amount in shop_cart.items():
                 f.write(f'* {name} - {amount}\n')
