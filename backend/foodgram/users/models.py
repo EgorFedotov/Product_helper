@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from foodgram.settings import LENGTH_FIELDS_USER
+
+from users.validators import UserNameValidator, check_username
 
 
 class User(AbstractUser):
@@ -18,16 +21,21 @@ class User(AbstractUser):
         max_length=LENGTH_FIELDS_USER,
         verbose_name='Логин',
         help_text='Логин пользователя',
+        validators=[check_username,
+                    UnicodeUsernameValidator()
+                    ]
     )
     first_name = models.CharField(
         max_length=LENGTH_FIELDS_USER,
         verbose_name='Имя',
-        help_text='Имя'
+        help_text='Имя',
+        validators=[UserNameValidator]
     )
     last_name = models.CharField(
         max_length=LENGTH_FIELDS_USER,
         verbose_name='Фамилия',
-        help_text='Фамилия'
+        help_text='Фамилия',
+        validators=[UserNameValidator]
     )
     password = models.CharField(
         max_length=LENGTH_FIELDS_USER,
@@ -45,5 +53,5 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.username
