@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
     'rest_framework',
-    'colorfield',
     'django_filters',
     'rest_framework.authtoken',
     'djoser',
@@ -129,19 +128,17 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
-    'SEND_ACTIVATION_EMAIL': False,
-
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.CreateUserSerializer',
-        'current_user': 'api.serializers.CustomUserSerializer',
-        'user': 'api.serializers.CustomUserSerializer',
-    },
-    "PERMISSIONS": {
-        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
-        "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
-    },
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'password_reset': ['rest_framework.permissions.AllowAny'],
+        'user_create': ['rest_framework.permissions.AllowAny'],
+        'user_delete': ['djoser.permissions.CurrentUserOrAdmin'],
+        'set_password': ['djoser.permissions.CurrentUserOrAdmin'],
+        'user': ['rest_framework.permissions.AllowAny'],
+        'token_create': ['rest_framework.permissions.AllowAny'],
+        'token_destroy': ['djoser.permissions.CurrentUserOrAdmin'],
+    }
 }
 
 

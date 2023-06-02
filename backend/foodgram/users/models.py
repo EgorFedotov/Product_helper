@@ -28,13 +28,13 @@ class User(AbstractUser):
         max_length=settings.LENGTH_FIELDS_USER,
         verbose_name='Имя',
         help_text='Имя',
-        validators=[UserNameValidator]
+        validators=[UserNameValidator()]
     )
     last_name = models.CharField(
         max_length=settings.LENGTH_FIELDS_USER,
         verbose_name='Фамилия',
         help_text='Фамилия',
-        validators=[UserNameValidator]
+        validators=[UserNameValidator()]
     )
 
     class Meta:

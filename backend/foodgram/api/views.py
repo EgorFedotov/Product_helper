@@ -1,7 +1,7 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet
+# from djoser.views import UserViewSet
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientAmount,
                             Recipe, ShoppingCart, Subscription, Tag)
 from rest_framework import filters, status, viewsets
@@ -14,64 +14,64 @@ from users.models import User
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (CreateRecipeSerializer, CreateUserSerializer,
+from .serializers import (CreateRecipeSerializer,
                           IngredientSerializer, RecipeSerializer,
                           SubscribeRecipeSerializer, SubscriptionSerializer,
                           TagSerializer)
 
 
-class UsersViewSet(UserViewSet):
-    """Работа с пользователями."""
-    queryset = User.objects.all()
-    serializer_class = CreateUserSerializer
-    search_fields = ('username', 'email')
+# class UsersViewSet(UserViewSet):
+#     """Работа с пользователями."""
+#     queryset = User.objects.all()
+#     serializer_class = CreateUserSerializer
+#     search_fields = ('username', 'email')
 
-    @action(
-        methods=['GET'],
-        detail=False,
-        permission_classes=(IsAuthenticated,)
-    )
-    def subscriptions(self, request):
-        user = request.user
-        queryset = User.objects.filter(subscribing__user=user)
-        page = self.paginate_queryset(queryset)
-        serializer = SubscriptionSerializer(
-            page, many=True, context={'request': request}
-        )
-        return self.get_paginated_response(serializer.data)
+#     @action(
+#         methods=['GET'],
+#         detail=False,
+#         permission_classes=(IsAuthenticated,)
+#     )
+#     def subscriptions(self, request):
+#         user = request.user
+#         queryset = User.objects.filter(subscribing__user=user)
+#         page = self.paginate_queryset(queryset)
+#         serializer = SubscriptionSerializer(
+#             page, many=True, context={'request': request}
+#         )
+#         return self.get_paginated_response(serializer.data)
 
-    @action(
-        methods=['POST', 'DELETE'],
-        detail=True,
-        permission_classes=[IsAuthenticated],
-    )
-    def subscribe(self, request, id):
-        author = get_object_or_404(User, id=id)
-        sub = Subscription.objects.filter(
-            user=request.user, author=author)
-        if request.method == 'DELETE' and not sub:
-            return Response(
-                {'errors': 'Невозможно удалить несуществующую подписку.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        if request.method == 'DELETE':
-            sub.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        if sub:
-            return Response(
-                {'errors': 'Вы уже подписаны на этого пользователя.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        if author == request.user:
-            return Response(
-                {'errors': 'Нельзя подписаться на самого себя.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        Subscription.objects.create(user=request.user, author=author)
-        serializer = SubscriptionSerializer(
-            author, context={'request': request}
-        )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     @action(
+#         methods=['POST', 'DELETE'],
+#         detail=True,
+#         permission_classes=[IsAuthenticated],
+#     )
+#     def subscribe(self, request, id):
+#         author = get_object_or_404(User, id=id)
+#         sub = Subscription.objects.filter(
+#             user=request.user, author=author)
+#         if request.method == 'DELETE' and not sub:
+#             return Response(
+#                 {'errors': 'Невозможно удалить несуществующую подписку.'},
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+#         if request.method == 'DELETE':
+#             sub.delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#         if sub:
+#             return Response(
+#                 {'errors': 'Вы уже подписаны на этого пользователя.'},
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+#         if author == request.user:
+#             return Response(
+#                 {'errors': 'Нельзя подписаться на самого себя.'},
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+#         Subscription.objects.create(user=request.user, author=author)
+#         serializer = SubscriptionSerializer(
+#             author, context={'request': request}
+#         )
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
