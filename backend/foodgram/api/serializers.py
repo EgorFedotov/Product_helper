@@ -11,30 +11,32 @@ from users.models import User
 User = get_user_model()
 
 
-class CreateUserSerializer(UserSerializer):
-    """Сериализатор для пользователя."""
-    is_subscribed = serializers.SerializerMethodField()
+# class CreateUserSerializer(UserSerializer):
+#     """Сериализатор для пользователя."""
+#     is_subscribed = serializers.SerializerMethodField()
 
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-        )
+#     class Meta:
+#         model = User
+#         fields = (
+#             'email',
+#             'id',
+#             'username',
+#             'first_name',
+#             'last_name',
+#             'is_subscribed',
+#         )
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if not request or request.user.is_anonymous:
-            return False
-        return obj.subscribing.filter(user=request.user).exists()
+#     def get_is_subscribed(self, obj):
+#         request = self.context.get('request')
+#         if not request or request.user.is_anonymous:
+#             return False
+#         return obj.subscribing.filter(user=request.user).exists()
 
 
 class SubscribeRecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для подписок."""
+    image = Base64ImageField()
+
     class Meta:
         model = Recipe
         fields = (
@@ -145,7 +147,10 @@ class IngredientRecipeGetSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для рецептов."""
-    author = CreateUserSerializer()
+    author = UserSerializer(
+        read_only=True,
+        default=serializers.CurrentUserDefault()
+    )
     image = Base64ImageField(max_length=None, use_url=True)
     ingredients = IngredientRecipeGetSerializer(many=True,
                                                 read_only=True,
