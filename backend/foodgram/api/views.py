@@ -9,15 +9,15 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from users.models import User
+# from users.models import User
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CreateRecipeSerializer,
                           IngredientSerializer, RecipeSerializer,
-                          SubscribeRecipeSerializer, SubscriptionSerializer,
-                          TagSerializer)
+                          SubscribeRecipeSerializer,
+                          TagSerializer)  # SubscriptionSerializer,
 
 
 # class UsersViewSet(UserViewSet):
@@ -167,6 +167,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         with open(file, 'w') as f:
             shop_cart = dict()
             for purchase in purchases:
+                
                 ingredients = IngredientAmount.objects.filter(
                     recipe=purchase.recipe.id
                 )
