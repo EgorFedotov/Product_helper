@@ -11,28 +11,6 @@ from users.models import User
 User = get_user_model()
 
 
-# class CreateUserSerializer(UserSerializer):
-#     """Сериализатор для пользователя."""
-#     is_subscribed = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = User
-#         fields = (
-#             'email',
-#             'id',
-#             'username',
-#             'first_name',
-#             'last_name',
-#             'is_subscribed',
-#         )
-
-#     def get_is_subscribed(self, obj):
-#         request = self.context.get('request')
-#         if not request or request.user.is_anonymous:
-#             return False
-#         return obj.subscribing.filter(user=request.user).exists()
-
-
 class SubscribeRecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для подписок."""
     image = Base64ImageField()
