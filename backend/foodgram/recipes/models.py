@@ -155,7 +155,7 @@ class IngredientAmount(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.PROTECT,
-        related_name='+',
+        related_name='amount_ingredient',
         verbose_name='Ингредиент',
         help_text='Ингредиент',
     )

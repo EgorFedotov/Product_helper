@@ -1,77 +1,31 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-# from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientAmount,
-                            Recipe, ShoppingCart, Subscription, Tag)
+from recipes.models import (FavoriteRecipe,
+                            Ingredient,
+                            IngredientAmount,
+                            Recipe,
+                            ShoppingCart,
+                            Tag)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-# from users.models import User
+from rest_framework.views import APIView
+from users.models import User
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CreateRecipeSerializer,
-                          IngredientSerializer, RecipeSerializer,
+                          IngredientSerializer,
+                          RecipeSerializer,
                           SubscribeRecipeSerializer,
-                          TagSerializer)  # SubscriptionSerializer,
-
-
-# class UsersViewSet(UserViewSet):
-#     """Работа с пользователями."""
-#     queryset = User.objects.all()
-#     serializer_class = CreateUserSerializer
-#     search_fields = ('username', 'email')
-
-#     @action(
-#         methods=['GET'],
-#         detail=False,
-#         permission_classes=(IsAuthenticated,)
-#     )
-#     def subscriptions(self, request):
-#         user = request.user
-#         queryset = User.objects.filter(subscribing__user=user)
-#         page = self.paginate_queryset(queryset)
-#         serializer = SubscriptionSerializer(
-#             page, many=True, context={'request': request}
-#         )
-#         return self.get_paginated_response(serializer.data)
-
-#     @action(
-#         methods=['POST', 'DELETE'],
-#         detail=True,
-#         permission_classes=[IsAuthenticated],
-#     )
-#     def subscribe(self, request, id):
-#         author = get_object_or_404(User, id=id)
-#         sub = Subscription.objects.filter(
-#             user=request.user, author=author)
-#         if request.method == 'DELETE' and not sub:
-#             return Response(
-#                 {'errors': 'Невозможно удалить несуществующую подписку.'},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         if request.method == 'DELETE':
-#             sub.delete()
-#             return Response(status=status.HTTP_204_NO_CONTENT)
-#         if sub:
-#             return Response(
-#                 {'errors': 'Вы уже подписаны на этого пользователя.'},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         if author == request.user:
-#             return Response(
-#                 {'errors': 'Нельзя подписаться на самого себя.'},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         Subscription.objects.create(user=request.user, author=author)
-#         serializer = SubscriptionSerializer(
-#             author, context={'request': request}
-#         )
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+                          SubscriptionSerializer,
+                          TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -167,7 +121,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         with open(file, 'w') as f:
             shop_cart = dict()
             for purchase in purchases:
-                
+
                 ingredients = IngredientAmount.objects.filter(
                     recipe=purchase.recipe.id
                 )
@@ -183,3 +137,45 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f.write(f'* {name} - {amount}\n')
 
         return FileResponse(open(file, 'rb'), as_attachment=True)
+
+
+class FollowUserView(APIView):
+    """Работа с пользователями."""
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, id):
+        author = get_object_or_404(User, id=id)
+        if request.user.follower.filter(author=author).exists():
+            return Response(
+                {"errors": "Вы уже подписаны на автора"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = SubscriptionSerializer(
+            request.user.follower.create(author=author),
+            context={"request": request},
+        )
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED
+        )
+
+    def delete(self, request, id):
+        author = get_object_or_404(User, id=id)
+        if request.user.follower.filter(author=author).exists():
+            request.user.follower.filter(
+                author=author
+            ).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"errors": "Автор отсутсвует в списке подписок"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class SubscriptionsView(ListAPIView):
+    """Работа с подписками."""
+    serializer_class = SubscriptionSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.request.user.follower.all()
