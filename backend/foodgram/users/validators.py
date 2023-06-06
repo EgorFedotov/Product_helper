@@ -9,7 +9,7 @@ def check_username(name):
         )
 
 
-class UserNameValidator(RegexValidator):
-    regex = r'^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$'
+class NameValidator(RegexValidator):
+    regex = r'^[а-яА-ЯёЁa-zA-Z -]+$'
     message = ('Недопустимые символы в username')
     flags = 0

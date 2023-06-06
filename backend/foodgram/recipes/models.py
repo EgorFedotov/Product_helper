@@ -1,10 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from foodgram.settings import LENGTH_FIELDS_RECIPES
 
 from recipes.validators import ColorValidator
-from users.validators import UserNameValidator
+from users.validators import NameValidator
 
 User = get_user_model()
 
@@ -13,10 +13,10 @@ class Tag(models.Model):
     """Модель тега."""
     name = models.CharField(
         unique=True,
-        max_length=LENGTH_FIELDS_RECIPES,
+        max_length=settings.LENGTH_FIELDS_RECIPES,
         verbose_name='Название',
         help_text='Название тега',
-        validators=[UserNameValidator()]
+        validators=[NameValidator()]
     )
     color = models.CharField(
         verbose_name='HEX-код цвета',
@@ -26,7 +26,7 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         unique=True,
-        max_length=LENGTH_FIELDS_RECIPES,
+        max_length=settings.LENGTH_FIELDS_RECIPES,
         verbose_name='Slug',
         help_text='Slug тега'
     )
@@ -42,14 +42,14 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Модель ингридиентов."""
     name = models.CharField(
-        max_length=LENGTH_FIELDS_RECIPES,
+        max_length=settings.LENGTH_FIELDS_RECIPES,
         verbose_name='Название ингредиента',
         help_text='Название ингредиента',
-        validators=[UserNameValidator()]
+        validators=[NameValidator()]
     )
     measurement_unit = models.CharField(
         default='г',
-        max_length=LENGTH_FIELDS_RECIPES,
+        max_length=settings.LENGTH_FIELDS_RECIPES,
         verbose_name='Единицы измерения',
         help_text='Единицы измерения'
     )
@@ -76,10 +76,10 @@ class Recipe(models.Model):
         help_text='Автор рецепта'
     )
     name = models.CharField(
-        max_length=LENGTH_FIELDS_RECIPES,
+        max_length=settings.LENGTH_FIELDS_RECIPES,
         verbose_name='Название',
         help_text='Название рецепта',
-        validators=[UserNameValidator()]
+        validators=[NameValidator()]
     )
     image = models.ImageField(
         verbose_name='Фото',

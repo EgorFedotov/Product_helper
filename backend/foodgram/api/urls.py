@@ -8,7 +8,6 @@ from .views import (FollowUserView,
                     TagViewSet)
 
 router = DefaultRouter()
-# router.register('users', UsersViewSet, basename='users')
 router.register('tags', TagViewSet, basename='tags')
 router.register('recipes', RecipeViewSet, basename='recipes')
 router.register('ingredients', IngredientViewSet, basename='ingredients')
