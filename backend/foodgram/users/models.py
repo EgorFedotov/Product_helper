@@ -8,6 +8,8 @@ from users.validators import NameValidator, check_username
 
 class User(AbstractUser):
     """Модель пользователя."""
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     email = models.EmailField(
         unique=True,
         max_length=settings.LENGTH_FIELDS_USER,
