@@ -1,14 +1,15 @@
-from django.contrib.auth import get_user_model
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientAmount,
-                            Recipe, ShoppingCart, Subscription, Tag)
+from recipes.models import (FavoriteRecipe,
+                            Ingredient,
+                            IngredientAmount,
+                            Recipe,
+                            ShoppingCart,
+                            Tag)
 from rest_framework import serializers, status
-from users.models import User
-
-User = get_user_model()
+from users.models import Subscription, User
 
 
 class SubscribeRecipeSerializer(serializers.ModelSerializer):
@@ -132,7 +133,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField(max_length=None, use_url=True)
     ingredients = IngredientRecipeGetSerializer(many=True,
                                                 read_only=True,
-                                                source='amount_ingredient')
+                                                source='ingredients')
     tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
@@ -212,12 +213,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         for tag in tags:
             recipe.tags.add(tag)
             recipe.save()
-        for ingredient in ingredients:
-            IngredientAmount.objects.bulk_create(
-                ingredient_id=ingredient.get('id'),
-                amount=ingredient.get('amount'),
-                recipe=recipe
-            )
+        IngredientAmount.objects.bulk_create([
+            IngredientAmount(
+                recipe=recipe,
+                ingredient=get_object_or_404(
+                    Ingredient,
+                    pk=ingr.get('id')),
+                amount=ingr.get('amount')
+            ) for ingr in ingredients
+        ])
         return recipe
 
     def create(self, validated_data):

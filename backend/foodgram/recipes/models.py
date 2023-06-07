@@ -155,14 +155,14 @@ class IngredientAmount(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.PROTECT,
-        related_name='amount_ingredient',
+        related_name='+',
         verbose_name='Ингредиент',
         help_text='Ингредиент',
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='amount_ingredient',
+        related_name='ingredients',
         verbose_name='Рецепт',
         help_text='Рецепт',
     )
@@ -192,41 +192,6 @@ class IngredientAmount(models.Model):
 
     def __str__(self):
         return f'{self.ingredient} {self.recipe}'
-
-
-class Subscription(models.Model):
-    """Модель подписчика."""
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follower',
-        verbose_name='Пользователь',
-        help_text='Пользователь',
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='following',
-        verbose_name='Избранный автор',
-        help_text='Избранный автор',
-    )
-
-    class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_relationships'
-            ),
-            models.CheckConstraint(
-                name='prevent_self_follow',
-                check=~models.Q(user=models.F('author')),
-            ),
-        ]
-
-    def __str__(self):
-        return f'{self.user} {self.author}'
 
 
 class FavoriteRecipe(models.Model):

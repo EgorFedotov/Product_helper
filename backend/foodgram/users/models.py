@@ -18,7 +18,6 @@ class User(AbstractUser):
     )
     username = models.CharField(
         unique=True,
-        db_index=True,
         max_length=settings.LENGTH_FIELDS_USER,
         verbose_name='Логин',
         help_text='Логин пользователя',
@@ -43,3 +42,38 @@ class User(AbstractUser):
         ordering = ('username',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+class Subscription(models.Model):
+    """Модель подписчика."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Пользователь',
+        help_text='Пользователь',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='Избранный автор',
+        help_text='Избранный автор',
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_relationships'
+            ),
+            models.CheckConstraint(
+                name='prevent_self_follow',
+                check=~models.Q(user=models.F('author')),
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.user} {self.author}'
