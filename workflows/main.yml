@@ -64,6 +64,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            sudo docker-compose stop
+            sudo systemctl stop nginx
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgramfront:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgramback:latest
             sudo docker compose down
