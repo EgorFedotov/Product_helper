@@ -1,6 +1,3 @@
-env: 
-  REF_GITHUB: 'refs/heads/master'
-
 name: Foodgram workflow
 
 on: [push]
@@ -30,7 +27,7 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     needs: tests
-    if: github.ref == $REF_GITHUB
+    if: github.ref_name == 'master'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2 
@@ -57,7 +54,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
-    if: github.ref == $REF_GITHUB
+    if: github.ref_name == 'master'
     steps:
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
