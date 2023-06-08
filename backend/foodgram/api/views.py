@@ -11,6 +11,7 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from users.models import User
 
 from .filters import IngredientFilter, RecipeFilter
@@ -70,7 +71,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                 status=status.HTTP_201_CREATED)
             text = 'errors: Объект уже в списке.'
             return Response(text, status=status.HTTP_400_BAD_REQUEST)
-
         if request.method == 'DELETE':
             if database.objects.filter(
                     user=self.request.user,
