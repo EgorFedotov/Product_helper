@@ -218,9 +218,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 recipe=recipe,
                 ingredient=get_object_or_404(
                     Ingredient,
-                    pk=ingr.get('id')),
-                amount=ingr.get('amount')
-            ) for ingr in ingredients
+                    pk=ingredient.get('id')),
+                amount=ingredient.get('amount')
+            ) for ingredient in ingredients
         ])
         return recipe
 
