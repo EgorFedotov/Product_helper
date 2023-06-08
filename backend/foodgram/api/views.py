@@ -1,12 +1,8 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (FavoriteRecipe,
-                            Ingredient,
-                            IngredientAmount,
-                            Recipe,
-                            ShoppingCart,
-                            Tag)
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientAmount,
+                            Recipe, ShoppingCart, Tag)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView
@@ -20,12 +16,9 @@ from users.models import User
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (CreateRecipeSerializer,
-                          IngredientSerializer,
-                          RecipeSerializer,
-                          SubscribeRecipeSerializer,
-                          SubscriptionSerializer,
-                          TagSerializer)
+from .serializers import (CreateRecipeSerializer, IngredientSerializer,
+                          RecipeSerializer, SubscribeRecipeSerializer,
+                          SubscriptionSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
