@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker-compose stop
+            sudo docker compose stop
             sudo docker system prune -f
             sudo docker-compose rm web
             sudo systemctl stop nginx
@@ -81,10 +81,10 @@ jobs:
             echo ALLOWED_HOSTS=* >> .env
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgramfront:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgramback:latest
-            sudo docker compose up -d
-            sudo docker-compose run web python3 manage.py makemigrations
-            sudo docker-compose run web python3 manage.py migrate
-            sudo docker-compose exec -T web python manage.py collectstatic --noinput
+            sudo docker compose up -d 
+            sudo docker compose run web python3 manage.py makemigrations
+            sudo docker compose run web python3 manage.py migrate
+            sudo docker compose exec -T web python manage.py collectstatic --noinput
 
   send_message:
     runs-on: ubuntu-latest
