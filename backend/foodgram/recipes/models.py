@@ -23,7 +23,7 @@ class Tag(models.Model):
         verbose_name='HEX-код цвета',
         help_text='Цветовой HEX-код',
         unique=True,
-        validators=[ColorValidator]
+        validators=[ColorValidator()]
     )
     slug = models.SlugField(
         unique=True,
