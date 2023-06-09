@@ -9,7 +9,7 @@ services:
       - ./.env
 
   web:
-    image: egorfedotovarz/foodgramback:v1
+    image: egorfedotovarz/foodgramback:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    image: egorfedotovarz/foodgramfront:v1
+    image: egorfedotovarz/foodgramfront:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
