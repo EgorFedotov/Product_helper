@@ -224,10 +224,16 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.bulk_create(**validated_data)
-        return self.add_ingredients_and_tags(
-            tags, ingredients, recipe
+        cooking_time = validated_data.pop('cooking_time')
+        author = serializers.CurrentUserDefault()(self)
+        new_recipe = Recipe.objects.create(
+            author=author,
+            cooking_time=cooking_time,
+            **validated_data
         )
+        new_recipe.tags.set(tags)
+        self.add_ingredients(new_recipe, ingredients)
+        return new_recipe
 
     def update(self, instance, validated_data):
         instance.ingredients.clear()
