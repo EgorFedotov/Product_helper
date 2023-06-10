@@ -68,12 +68,12 @@ class Ingredient(models.Model):
         return f'{self.name}, {self.measurement_unit}'
 
 
-class Recipe(models.Model):
+class Recipes(models.Model):
     """Модель рецепта."""
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='recipes',
+        related_name='recipe',
         verbose_name='Автор рецепта',
         help_text='Автор рецепта'
     )
@@ -129,12 +129,12 @@ class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='shopping_list',
+        related_name='shopping_cart',
         verbose_name='Пользователь',
         help_text='Пользователь',
     )
     recipe = models.ForeignKey(
-        Recipe,
+        Recipes,
         on_delete=models.CASCADE,
         related_name='+',
         verbose_name='Рецепт в списке покупок',
@@ -152,19 +152,19 @@ class ShoppingCart(models.Model):
         )
 
 
-class IngredientAmount(models.Model):
+class RecipeIngredient(models.Model):
     """Модель ингридиентов в рецепте."""
     ingredient = models.ForeignKey(
         Ingredient,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='+',
         verbose_name='Ингредиент',
         help_text='Ингредиент',
     )
     recipe = models.ForeignKey(
-        Recipe,
+        Recipes,
         on_delete=models.CASCADE,
-        related_name='ingredients',
+        related_name='ingredients_amount',
         verbose_name='Рецепт',
         help_text='Рецепт',
     )
@@ -196,17 +196,17 @@ class IngredientAmount(models.Model):
         return f'{self.ingredient} {self.recipe}'
 
 
-class FavoriteRecipe(models.Model):
+class Favorite(models.Model):
     """Модель избранного."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='favorite_list',
+        related_name='favorites',
         verbose_name='Пользователь',
         help_text='Пользователь',
     )
     recipe = models.ForeignKey(
-        Recipe,
+        Recipes,
         on_delete=models.CASCADE,
         related_name='+',
         verbose_name='Избранный рецепт',

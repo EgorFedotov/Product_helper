@@ -1,8 +1,10 @@
 import django_filters as filters
-
-from recipes.models import Recipe
+from django.contrib.auth import get_user_model
 from rest_framework.filters import SearchFilter
-from users.models import User
+
+from recipes.models import Recipes
+
+User = get_user_model()
 
 
 class IngredientFilter(SearchFilter):
@@ -22,7 +24,7 @@ class RecipeFilter(filters.FilterSet):
     )
 
     class Meta:
-        model = Recipe
+        model = Recipes
         fields = ('tags', 'author',)
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
