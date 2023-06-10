@@ -231,8 +231,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             cooking_time=cooking_time,
             **validated_data
         )
-        new_recipe.tags.set(tags)
-        self.add_ingredients(new_recipe, ingredients)
+        # new_recipe.tags.set(tags)
+        self.add_ingredients_and_tags(tags, ingredients, new_recipe)
         return new_recipe
 
     def update(self, instance, validated_data):
