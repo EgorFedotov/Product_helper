@@ -121,7 +121,7 @@ ALLOWED_HOSTS           # ['*'] (порты)
 
 # Доступ в админ-панель:
 
-http://158.160.5.31/admin
+http://130.193.53.110/admin
 Email: egorfedotov@gmail.com
 Логин: egorka
 Пароль: foodgram
