@@ -93,8 +93,7 @@ ALLOWED_HOSTS           # ['*'] (порты)
 Наполняем БД из файла ingredients.json:
 
 ```bash
-  
-
+  sudo docker compose exec web python manage.py load_ingredients
 ```
 
 Для остановки контейнеров Docker

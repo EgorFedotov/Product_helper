@@ -77,8 +77,8 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            echo DEBUG=True >> .env
-            echo ALLOWED_HOSTS=* >> .env
+            echo DEBUG=False >> .env
+            echo ALLOWED_HOSTS=['*'] >> .env
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgramfront:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgramback:latest
             sudo docker compose up -d 
