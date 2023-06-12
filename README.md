@@ -79,8 +79,8 @@ ALLOWED_HOSTS           # ['*'] (порты)
 Выполнеям миграции:
 
 ```bash
-  sudo docker compose exec web python manage.py makemigrations
-  sudo docker compose exec web python manage.py migrate
+  sudo sudo docker compose exec web python manage.py makemigrations
+  sudo sudo docker compose exec web python manage.py migrate
 ```
 
 Создаем суперпользователя и собираем статику :
@@ -120,7 +120,7 @@ ALLOWED_HOSTS           # ['*'] (порты)
 
 # Доступ в админ-панель:
 
-http://130.193.53.110/admin
+http://158.160.71.33/admin
 Email: egorfedotov@gmail.com
 Логин: egorka
 Пароль: foodgram
