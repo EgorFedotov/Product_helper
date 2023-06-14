@@ -23,10 +23,6 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = [IngredientInline]
     empty_value_display = ('-пусто-')
 
-    @admin.display(description='Количество добавлений в избранное')
-    def number_of_favorites(self, obj):
-        return obj.favorites.count()
-
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
