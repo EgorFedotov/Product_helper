@@ -1,8 +1,8 @@
 ![example workflow](https://github.com/EgorFedotov/foodgram-project-react/actions/workflows/foodgram-project-react.yml/badge.svg)
 
-## Foodgram сайт с рецептами, продуктовый помощник
+## Product helper сайт с рецептами, продуктовый помощник
 
-Foodgram - это сайт, на котором можно размещать свои рецепты, смотреть рецепты других авторов, подписываться на интересующего автора, а также формировать список покупок для выбранных рецептов.
+Product helper - это сайт, на котором можно размещать свои рецепты, смотреть рецепты других авторов, подписываться на интересующего автора, а также формировать список покупок для выбранных рецептов.
 
 ## Стек
 
@@ -29,7 +29,7 @@ Foodgram - это сайт, на котором можно размещать с
 Клонируем репозиторий
 
 ```bash
-  git clone git@github.com:EgorFedotov/foodgram-project-react.git
+  git clone git@github.com:EgorFedotov/Product_helper.git
 ```
 
 На удаленном сервере устанавливаем Docker и Docker сompose:
@@ -115,12 +115,3 @@ ALLOWED_HOSTS           # ['*'] (порты)
   - DB_PORT
   - DEBUG
   - ALLOWED_HOSTS
-
-
-
-# Доступ в админ-панель:
-
-http://158.160.71.33/admin
-Email: egorfedotov@gmail.com
-Логин: egorka
-Пароль: foodgram
