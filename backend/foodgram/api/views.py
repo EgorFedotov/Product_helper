@@ -25,6 +25,7 @@ logger = add_logger(__name__)
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
+    """Вывод рецептов."""
     queryset = Recipes.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilter
@@ -167,6 +168,7 @@ class FollowUserView(APIView):
 
 
 class SubscriptionsView(ListAPIView):
+    """Выводи подписок."""
     serializer_class = FollowSerializer
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticated,)
