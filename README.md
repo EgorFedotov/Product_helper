@@ -1,4 +1,3 @@
-![example workflow](https://github.com/EgorFedotov/foodgram-project-react/actions/workflows/foodgram-project-react.yml/badge.svg)
 
 ## Product helper сайт с рецептами, продуктовый помощник
 
@@ -102,7 +101,6 @@ ALLOWED_HOSTS           # ['*'] (порты)
   sudo docker compose down -v      # с их удалением
   sudo docker compose stop         # без удаления
 ```
-
 
 
 # Для запуска проета локально в корне дерриктории infa создайте файл .env и добавьте туда:
