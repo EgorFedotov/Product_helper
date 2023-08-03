@@ -18,8 +18,10 @@ from api.serializers import (FollowSerializer, IngredientSerializer,
                              FavoriteSerializer, RecipeListSerializer,
                              RecipesWriteSerializer, TagsSerializer)
 from recipes.models import Favorite, Ingredient, Recipes, ShoppingCart, Tag
+from logger.logger import add_logger
 
 User = get_user_model()
+logger = add_logger(__name__)
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
@@ -52,6 +54,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
     def add_in_list(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
+            logger.error(f'Рецепт уже добавлен в {model.__name__}')
             return Response(
                 {'errors': f'Рецепт уже добавлен в {model.__name__}'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -67,6 +70,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if obj.exists():
             obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        logger.error(f'Рецепт уже добавлен в {model.__name__}')
         return Response(
             {'errors': f'Рецепт не добавлен в {model.__name__}'},
             status=status.HTTP_400_BAD_REQUEST
@@ -112,13 +116,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вывод тегов."""
     queryset = Tag.objects.all()
     serializer_class = TagsSerializer
     pagination_class = None
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """ Вывод ингредиентов """
+    """Вывод ингредиентов."""
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     permission_classes = (IsAuthorOrReadOnly,)
@@ -128,11 +133,13 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class FollowUserView(APIView):
+    """"""
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, id):
         author = get_object_or_404(User, id=id)
         if request.user.follower.filter(author=author).exists():
+            logger.error("Вы уже подписаны на автора")
             return Response(
                 {"errors": "Вы уже подписаны на автора"},
                 status=status.HTTP_400_BAD_REQUEST,

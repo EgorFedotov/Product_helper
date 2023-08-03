@@ -14,6 +14,3 @@ def add_logger(name):
     )
     logger.addHandler(handler)
     return logger
-
-
-logger = add_logger(__name__)
