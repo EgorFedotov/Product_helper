@@ -133,7 +133,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class FollowUserView(APIView):
-    """"""
+    """Вывод подписчиков пользователя."""
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, id):
@@ -159,6 +159,7 @@ class FollowUserView(APIView):
                 author=author
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        logger.error("Автор отсутсвует в списке подписок")
         return Response(
             {"errors": "Автор отсутсвует в списке подписок"},
             status=status.HTTP_400_BAD_REQUEST,
